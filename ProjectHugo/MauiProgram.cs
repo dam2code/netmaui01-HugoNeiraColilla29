@@ -9,6 +9,7 @@ namespace Maui_app
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                //lo que quieras
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
