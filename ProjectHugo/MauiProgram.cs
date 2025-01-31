@@ -1,26 +1,52 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace Maui_app
 {
-    public static class MauiProgram
+    public static class PhonewordTranslator
     {
-        public static MauiApp CreateMauiApp()
+        public static string ToNumber(string raw)
         {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                //lo que quieras
-                .ConfigureFonts(fonts =>
+            if (string.IsNullOrWhiteSpace(raw))
+                return null;
+
+            raw = raw.ToUpperInvariant();
+
+            var newNumber = new StringBuilder();
+            foreach (var c in raw)
+            {
+                if (" -0123456789".Contains(c))
+                    newNumber.Append(c);
+                else
                 {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+                    var result = TranslateToNumber(c);
+                    if (result != null)
+                        newNumber.Append(result);
+                    // Bad character?
+                    else
+                        return null;
+                }
+            }
+            return newNumber.ToString();
+        }
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+        static bool Contains(this string keyString, char c)
+        {
+            return keyString.IndexOf(c) >= 0;
+        }
 
-            return builder.Build();
+        static readonly string[] digits = {
+        "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"
+    };
+
+        static int? TranslateToNumber(char c)
+        {
+            for (int i = 0; i < digits.Length; i++)
+            {
+                if (digits[i].Contains(c))
+                    return 2 + i;
+            }
+            return null;
         }
     }
 }
