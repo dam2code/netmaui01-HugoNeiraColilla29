@@ -3,50 +3,25 @@ using System.Text;
 
 namespace Maui_app
 {
-    public static class PhonewordTranslator
-    {
-        public static string ToNumber(string raw)
+    
+        public static class MauiProgram
         {
-            if (string.IsNullOrWhiteSpace(raw))
-                return null;
-
-            raw = raw.ToUpperInvariant();
-
-            var newNumber = new StringBuilder();
-            foreach (var c in raw)
+            public static MauiApp CreateMauiApp()
             {
-                if (" -0123456789".Contains(c))
-                    newNumber.Append(c);
-                else
-                {
-                    var result = TranslateToNumber(c);
-                    if (result != null)
-                        newNumber.Append(result);
-                    // Bad character?
-                    else
-                        return null;
-                }
+                var builder = MauiApp.CreateBuilder();
+                builder
+                    .UseMauiApp<App>()
+                    .ConfigureFonts(fonts =>
+                    {
+                        fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                        fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    });
+
+#if DEBUG
+                builder.Logging.AddDebug();
+#endif
+
+                return builder.Build();
             }
-            return newNumber.ToString();
-        }
-
-        static bool Contains(this string keyString, char c)
-        {
-            return keyString.IndexOf(c) >= 0;
-        }
-
-        static readonly string[] digits = {
-        "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"
-    };
-
-        static int? TranslateToNumber(char c)
-        {
-            for (int i = 0; i < digits.Length; i++)
-            {
-                if (digits[i].Contains(c))
-                    return 2 + i;
-            }
-            return null;
         }
     }
-}
